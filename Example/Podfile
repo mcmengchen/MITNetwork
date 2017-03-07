@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'MITNetwork_Example' do
+  pod 'MITNetwork', :path => '../'
+
+  target 'MITNetwork_Tests' do
+    inherit! :search_paths
+
+    pod 'FBSnapshotTestCase'
+  end
+end
