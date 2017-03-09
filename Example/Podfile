@@ -1,4 +1,3 @@
-use_frameworks!
 
 target 'MITNetwork_Example' do
   pod 'MITNetwork', :path => '../'
