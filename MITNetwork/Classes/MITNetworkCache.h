@@ -27,5 +27,5 @@
 /**
  *  删除所有网络缓存,
  */
-+ (void)removeAllHttpCache;
++ (void)removeAllCache;
 @end

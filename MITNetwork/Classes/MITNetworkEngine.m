@@ -692,6 +692,16 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 }
 
 
+#pragma mark action 清空所有缓存
++ (void)clearAllCache{
+    [[MITNetworkEngine defaultEngine] clearAllCache];
+}
+
+- (void)clearAllCache{
+    [MITNetworkCache removeAllCache];
+}
+
+
 #pragma mark action dealloc
 -(void)dealloc{
     pthread_mutex_destroy(&_lock);

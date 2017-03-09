@@ -40,10 +40,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 //取消请求
 + (void)cancelRequest:(MITNetworkRequest * )request Block:(void(^)(BOOL,MITNET_REQUEST_STEP))cancelBlock;
+
 //暂停
 + (void)suspend:(MITNetworkRequest *)request;
+
 //继续
 + (void)resume:(MITNetworkRequest *)request;
+
 //取消所有请求
 + (void)cancelAllRequest;
 
@@ -52,6 +55,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 //设置网络变化回调
 + (void)setNetStatusChangeCallBack:(void(^)(MITNET_REACHABILITY_TATUS))callBack;
+
+//清空网络缓存
++ (void)clearAllCache;
+
 
 
 NS_ASSUME_NONNULL_END

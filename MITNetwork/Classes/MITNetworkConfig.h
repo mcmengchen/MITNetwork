@@ -154,6 +154,15 @@ typedef void (^MITFinishedBlock)(id _Nullable responseObject, NSError * _Nullabl
 /** 缓存策略 */
 @property(nonatomic, assign)MITNET_REQUEST_CACHE  cachePolicy;
 
+/** 缓存时间限制 */
+@property(nonatomic, assign)NSTimeInterval cacheAgeLimit;
+
+/** 缓存消耗限制 */
+@property(nonatomic, assign)NSUInteger cacheCostLimit;
+
+
+
+
 
 
 NS_ASSUME_NONNULL_END

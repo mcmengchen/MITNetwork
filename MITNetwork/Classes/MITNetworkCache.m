@@ -9,7 +9,7 @@
 #import "MITNetworkCache.h"
 #import "YYCache.h"
 
-
+#import "MITNetworkConfig.h"
 
 
 static NSString * kMitCacheKey = @"kMitCacheKey";
@@ -36,11 +36,24 @@ static NSString * kMitCacheKey = @"kMitCacheKey";
 }
 
 
-
+//默认时间限制（默认15天）
+static NSTimeInterval kDefaultAgeLimit = 60*60*24*15;
+//默认消耗限制(默认50M)
+static NSUInteger kDefaultCostLimit = 50*1024*1024;
 #pragma mark create 创建缓存
 - (YYCache *)cache{
     if (!_cache) {
         _cache = [YYCache cacheWithName:kMitCacheKey];
+        if ([MITNetworkConfig defaultConfig].cacheAgeLimit>0) {
+            _cache.memoryCache.costLimit = [MITNetworkConfig defaultConfig].cacheAgeLimit;
+        }else{
+            _cache.memoryCache.costLimit = kDefaultAgeLimit;
+        }
+        if ([MITNetworkConfig defaultConfig].cacheAgeLimit>0) {
+            _cache.memoryCache.ageLimit = [MITNetworkConfig defaultConfig].cacheAgeLimit;
+        }else{
+            _cache.diskCache.ageLimit = kDefaultAgeLimit;
+        }
     }
     return _cache;
 }
@@ -79,6 +92,15 @@ static NSString * kMitCacheKey = @"kMitCacheKey";
     NSString *cacheKey = [NSString stringWithFormat:@"%@%@",url,paraString];
     return cacheKey;
 }
+
++ (void)removeAllCache{
+    [[MITNetworkCache cache] removeAllCache];
+}
+
+- (void)removeAllCache{
+    [_cache removeAllObjects];
+}
+
 
 
 @end
