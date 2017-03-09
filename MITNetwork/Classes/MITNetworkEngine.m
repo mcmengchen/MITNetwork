@@ -26,6 +26,7 @@ if(BlockName){\
 BlockName(__VA_ARGS__);\
 }
 typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
+typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 
 @interface MITNetworkEngine()
 {
@@ -39,6 +40,12 @@ typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
 @property(nonatomic, strong)AFJSONResponseSerializer * jsonResponseSerializer;
 /** xml 回包序列化 */
 @property(nonatomic, strong)AFXMLParserResponseSerializer * xmlResponseSerialzier;
+
+/** 当前的网络状态  */
+@property(nonatomic, assign)AFNetworkReachabilityStatus stataus;
+/** 回调 */
+@property(nonatomic, copy)MITNetStatusChangeCallBack callBack;
+
 @end
 
 @implementation MITNetworkEngine
@@ -87,9 +94,29 @@ typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
         _manager = [AFHTTPSessionManager manager];
         _manager.operationQueue.maxConcurrentOperationCount = [MITNetworkConfig defaultConfig].maxOperationCount;
         pthread_mutex_init(&_lock,NULL);
+        //获取当前的网络
+        [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+            _stataus = status;
+            //如果有回调
+            if ([MITNetworkEngine defaultEngine].callBack) {
+                [MITNetworkEngine defaultEngine].callBack(status);
+            }
+        }];
+        
     }
     return self;
 }
+
+#pragma mark action 获取当前网络状态
++ (MITNET_REACHABILITY_TATUS)getCurrentNetStatus{
+    [MITNetworkEngine defaultEngine].stataus = [AFNetworkReachabilityManager manager].networkReachabilityStatus;
+    return [MITNetworkEngine defaultEngine].stataus;
+}
+
++ (void)setNetStatusChangeCallBack:(void (^)(MITNET_REACHABILITY_TATUS))callBack{
+    [MITNetworkEngine defaultEngine].callBack = callBack;
+}
+
 #pragma mark action 发送请求
 + (MITNetworkRequest *)sendRequest:(MITRequestBlock)requestBlock onSuccess:(MITSuccessBlock)successBlock onFailure:(MITFailureBlock)failureBlock{
     return [MITNetworkEngine sendRequest:requestBlock onProgress:nil onSuccess:successBlock onFailure:failureBlock];

@@ -44,9 +44,15 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)suspend:(MITNetworkRequest *)request;
 //继续
 + (void)resume:(MITNetworkRequest *)request;
-
 //取消所有请求
 + (void)cancelAllRequest;
+
+//获取当前网络状态
++ (MITNET_REACHABILITY_TATUS)getCurrentNetStatus;
+
+//设置网络变化回调
++ (void)setNetStatusChangeCallBack:(void(^)(MITNET_REACHABILITY_TATUS))callBack;
+
 
 NS_ASSUME_NONNULL_END
 @end

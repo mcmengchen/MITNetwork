@@ -75,6 +75,14 @@ typedef NS_ENUM(NSUInteger, MITNET_RESUME_DATA_TYPE) {
     MITNET_RESUME_DATA_TYPE_BAN,
 };
 
+//当前网络状态
+typedef NS_ENUM(NSUInteger, MITNET_REACHABILITY_TATUS) {
+    MITNET_REACHABILITY_TATUS_UNKNOWN          = -1,
+    MITNET_REACHABILITY_TATUS_NOT     = 0,
+    MITNET_REACHABILITY_TATUS_ViaWWAN = 1,
+    MITNET_REACHABILITY_TATUS_ViaWiFi = 2,
+};
+
 
 
 typedef void (^MITRequestBlock)(MITNetworkRequest *_Nullable request);
