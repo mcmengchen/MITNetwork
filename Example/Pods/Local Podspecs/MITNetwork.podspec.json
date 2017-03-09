@@ -20,7 +20,10 @@
   },
   "source_files": "MITNetwork/Classes/**/*",
   "dependencies": {
-    "PPNetworkHelper": [
+    "AFNetworking": [
+
+    ],
+    "YYCache": [
 
     ]
   }

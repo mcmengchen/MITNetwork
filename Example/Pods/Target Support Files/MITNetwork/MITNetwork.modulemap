@@ -1,0 +1,6 @@
+framework module MITNetwork {
+  umbrella header "MITNetwork-umbrella.h"
+
+  export *
+  module * { export * }
+}

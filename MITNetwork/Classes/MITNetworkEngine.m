@@ -11,6 +11,7 @@
 #import <pthread/pthread.h>
 #import "MITNetworkCache.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "MITNetworkLogger.h"
 
 #if __has_include(<AFNetworking/AFNetworking.h>)
 #import <AFNetworking/AFNetworking.h>
@@ -145,7 +146,7 @@ typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
     NSMutableURLRequest *request =  [self mit_constructRequestConfigByRequest:requestTask bodyWithBlock:nil];
     //如果是只读缓存的类型
     if (requestTask.cachePolicy == MITNET_REQUEST_CACHE_ONLY) {
-        NSLog(@"缓存只读");
+        MITLog(@"缓存只读");
         id obj = [MITNetworkCache mit_CacheWithURL:requestTask.url params:requestTask.parameters];
         if (obj &&![obj isKindOfClass:[NSNull class]]) {
             if (requestTask.successBlock) {
@@ -224,7 +225,7 @@ typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
             downloadTask = [self.manager downloadTaskWithResumeData:data progress:downloadRequest.progressBlock destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
                 downloadRequest.resumDownloadPath = targetPath;
                 NSURL * url = [NSURL fileURLWithPath:downloadRequest.downloadSavePath isDirectory:NO];
-                NSLog(@"url = %@",url);
+                MITLog(@"url = %@",url);
                 return url;
             } completionHandler:
                             ^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
@@ -239,7 +240,7 @@ typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
         downloadTask = [self.manager downloadTaskWithRequest:urlRequest progress:downloadRequest.progressBlock destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
             downloadRequest.resumDownloadPath = targetPath;
             NSURL * url = [NSURL fileURLWithPath:downloadRequest.downloadSavePath isDirectory:NO];
-            NSLog(@"url = %@",url);
+            MITLog(@"url = %@",url);
             return url;
         } completionHandler:
                         ^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
@@ -320,7 +321,7 @@ typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
             [incompleteDownloadData writeToURL:[self incompleteDownloadTempPathForDownloadPath:request.resumDownloadPath] atomically:YES];
         }
         NSData * data= [NSData dataWithContentsOfURL:[NSURL URLWithString:request.resumDownloadPath]];
-        NSLog(@"data = %@",data);
+        MITLog(@"data = %@",data);
     }
     if ([request.responseObject isKindOfClass:[NSURL class]]) {
         NSURL *url = request.responseObject;
@@ -591,7 +592,7 @@ typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
     MITNetworkRequest * resultRequest = [_requestDict objectForKey:@(request.requestTask.taskIdentifier)];
     if (resultRequest&&resultRequest.requestTask) {
         [resultRequest.requestTask cancel];
-        NSLog(@"statet = %ld",resultRequest.requestTask.state);
+        MITLog(@"statet = %ld",resultRequest.requestTask.state);
         switch (resultRequest.requestTask.state) {
             case NSURLSessionTaskStateRunning:
             {

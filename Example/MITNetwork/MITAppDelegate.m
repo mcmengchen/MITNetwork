@@ -21,6 +21,7 @@
     MITNetworkConfig *networkConfig  = [MITNetworkConfig defaultConfig];
     networkConfig.hostUrl = @"https://api.weibo.com/2";
     networkConfig.responseSerializer = MITNET_RESPONSE_SERIALIZERTYPE_JSON;
+    networkConfig.enableDebug = true;
 }
 - (void)applicationWillResignActive:(UIApplication *)application
 {

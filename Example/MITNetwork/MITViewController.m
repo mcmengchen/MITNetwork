@@ -8,7 +8,6 @@
 
 #import "MITViewController.h"
 #import "MITNetwork.h"
-#import "PPNetworkHelper.h"
 #import "WeiboSDK.h"
 #import <UIKit/UIKit.h>
 #define kRedirectURI    @"http://www.sina.com"
@@ -83,9 +82,9 @@
         request.cachePolicy = MITNET_REQUEST_CACHE_REFRESH;
 
     } onSuccess:^(id  _Nullable responseObject) {
-        NSLog(@"%@",responseObject);
+//        NSLog(@"%@",responseObject);
     } onFailure:^(NSError * _Nullable error) {
-         NSLog(@"%@",error);
+//         NSLog(@"%@",error);
 
     }];
     
@@ -98,9 +97,9 @@
         request.parameters = @{@"access_token":[NSString stringWithFormat:@"%@",_weiboToken]};
         request.cachePolicy = MITNET_REQUEST_CACHE_ONLY;
     } onSuccess:^(id  _Nullable responseObject) {
-        NSLog(@"%@",responseObject);
+//        NSLog(@"%@",responseObject);
     } onFailure:^(NSError * _Nullable error) {
-        NSLog(@"%@",error);
+//        NSLog(@"%@",error);
     }];
     
     
@@ -115,9 +114,9 @@
         request.type = MITNET_TYPE_UPLOAD;
         request.method = MITNET_REQUEST_METHOD_POST;
     } onSuccess:^(id  _Nullable responseObject) {
-        NSLog(@"%@",responseObject);
+//        NSLog(@"%@",responseObject);
     } onFailure:^(NSError * _Nullable error) {
-        NSLog(@"%@",error);
+//        NSLog(@"%@",error);
     }];
     
     
@@ -130,9 +129,9 @@
     }onProgress:^(NSProgress * _Nullable progress) {
         NSLog(@"progress = %f",progress.fractionCompleted);
     }onSuccess:^(id  _Nullable responseObject) {
-        NSLog(@"---------%f",CFAbsoluteTimeGetCurrent() - _startTime);
+//        NSLog(@"---------%f",CFAbsoluteTimeGetCurrent() - _startTime);
     } onFailure:^(NSError * _Nullable error) {
-        NSLog(@"%@",error);
+//        NSLog(@"%@",error);
     }];
 }
 
