@@ -7,8 +7,9 @@
 //
 
 @import UIKit;
+#import "WeiboSDK.h"
 
-@interface MITAppDelegate : UIResponder <UIApplicationDelegate>
+@interface MITAppDelegate : UIResponder <UIApplicationDelegate,WeiboSDKDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
