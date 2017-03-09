@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'MITNetwork'
-  s.version          = '0.0.2'
+  s.version          = '0.0.3'
   s.summary          = 'summary of MITNetwork.'
   s.description      = 'MITNetwork description'
   s.homepage         = 'https://github.com/mcmengchen/MITNetwork'
