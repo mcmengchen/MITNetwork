@@ -28,7 +28,7 @@
  */
 @property (nonatomic, assign) MITNET_TYPE type;
 /**
- *  服务器地址 eg htttps://www.foo.com
+ *  服务器地址 eg https://www.baidu.com
  */
 @property (nonatomic, copy,nullable) NSString * hostUrl;
 
@@ -38,7 +38,7 @@
 @property (nonatomic, strong,nullable) NSString * api;
 
 /**
- 请求的完整地址 eg htttps://www.foo.com/foo/bar/
+ 请求的完整地址 eg https://www.baidu.com/files/ 
  */
 @property (nonatomic, strong,nullable) NSString *url;
 

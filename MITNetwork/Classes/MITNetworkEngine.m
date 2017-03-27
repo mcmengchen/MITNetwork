@@ -28,7 +28,7 @@ BlockName(__VA_ARGS__);\
 typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
 typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 
-@interface MITNetworkEngine()
+@interface MITNetworkEngine()<NSURLSessionDownloadDelegate>
 {
     pthread_mutex_t _lock;
 }
@@ -254,10 +254,9 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
                 NSURL * url = [NSURL fileURLWithPath:downloadRequest.downloadSavePath isDirectory:NO];
                 MITLog(@"url = %@",url);
                 return url;
-            } completionHandler:
-                            ^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
-                                [self handleResponseResult:downloadTask responseObject:filePath error:error];
-                            }];
+            } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
+                [self handleResponseResult:downloadTask responseObject:filePath error:error];
+            }];
             resumeSucceeded = YES;
         } @catch (NSException *exception) {
             resumeSucceeded = NO;
@@ -269,10 +268,10 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
             NSURL * url = [NSURL fileURLWithPath:downloadRequest.downloadSavePath isDirectory:NO];
             MITLog(@"url = %@",url);
             return url;
-        } completionHandler:
-                        ^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
-                            [self handleResponseResult:downloadTask responseObject:filePath error:error];
-                        }];
+        } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
+            [self handleResponseResult:downloadTask responseObject:filePath error:error];
+        }];
+        
     }
     downloadRequest.requestTask = downloadTask;
     [downloadTask resume];
@@ -705,6 +704,28 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 #pragma mark action dealloc
 -(void)dealloc{
     pthread_mutex_destroy(&_lock);
+}
+
+#pragma mark ------------------ NSURLSessionDownloadDelegate ------------------
+
+/* Sent periodically to notify the delegate of download progress. */
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+      didWriteData:(int64_t)bytesWritten
+ totalBytesWritten:(int64_t)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite{
+    
+}
+
+/* Sent when a download has been resumed. If a download failed with an
+ * error, the -userInfo dictionary of the error will contain an
+ * NSURLSessionDownloadTaskResumeData key, whose value is the resume
+ * data.
+ */
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+ didResumeAtOffset:(int64_t)fileOffset
+expectedTotalBytes:(int64_t)expectedTotalBytes{
+    
+    
 }
 
 @end

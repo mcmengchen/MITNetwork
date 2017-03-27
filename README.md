@@ -4,9 +4,7 @@
 [![Version](https://img.shields.io/cocoapods/v/MITNetwork.svg?style=flat)](http://cocoapods.org/pods/MITNetwork)
 [![License](https://img.shields.io/cocoapods/l/MITNetwork.svg?style=flat)](http://cocoapods.org/pods/MITNetwork)
 [![Platform](https://img.shields.io/cocoapods/p/MITNetwork.svg?style=flat)](http://cocoapods.org/pods/MITNetwork)
-## IDEA FROM
 
-My dear colleagues BaXiang https://github.com/baxiang
 
 ## Example
 
