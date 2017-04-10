@@ -95,6 +95,12 @@
  */
 @property (nonatomic, copy,nullable) NSString * resumDownloadPath;
 
+/**
+ 断点下载的 URL
+ */
+@property (nonatomic, copy,nullable) NSURL * resumeDownloadUrl;
+
+
 /** 是否可以断点下载 */
 @property(nonatomic, assign)BOOL allowResume;
 /**
@@ -149,7 +155,7 @@
 @property (nonatomic, strong, readwrite, nullable) NSData *responseData;
 
 /**
- 相应对象
+ Json 响应对象
  */
 @property (nonatomic, strong, readwrite, nullable) id responseJSONObject;
 

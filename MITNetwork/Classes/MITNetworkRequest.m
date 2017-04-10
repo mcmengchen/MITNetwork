@@ -72,9 +72,13 @@
 
 - (void)addFormDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileData:(NSData *)fileData{
     MITNetworkUploadFormData * formData = [MITNetworkUploadFormData formDataWithName:name fileName:fileName mimeType:mimeType fileData:fileData];
+    [self.uploadFormDatas addObject:formData];
+
 }
 - (void)addFormDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileURL:(NSURL *)fileURL{
     MITNetworkUploadFormData * formData = [MITNetworkUploadFormData formDataWithName:name fileName:fileName mimeType:mimeType fileURL:fileURL];
+    [self.uploadFormDatas addObject:formData];
+
 }
 - (void)clearRequestBlock {
     _successBlock = nil;
@@ -86,13 +90,7 @@
     [self clearRequestBlock];
 }
 
--(NSString *)description{
-    NSString * str = @"";
-    for (id obj in self) {
-        str = [str stringByAppendingString:[NSString stringWithFormat:@"%@",obj]];
-    }
-    return str;
-}
+
 
 
 @end

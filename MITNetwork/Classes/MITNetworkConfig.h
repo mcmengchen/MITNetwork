@@ -166,6 +166,18 @@ typedef void (^MITFinishedBlock)(id _Nullable responseObject, NSError * _Nullabl
 @property(nonatomic, assign)NSUInteger cacheCostLimit;
 
 
+/** 是否保存 cookie */
+@property (nonatomic, assign) BOOL cookieEnable;
+
+/* cookie name  */
+@property (nonatomic, strong) NSString * cookieName;
+/* cookie domain */
+@property (nonatomic, strong) NSString * cookieDomain;
+/* cookie path */
+@property (nonatomic, strong) NSString * cookiePath;
+
+
+
 
 
 

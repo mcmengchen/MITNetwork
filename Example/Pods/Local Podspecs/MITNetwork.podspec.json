@@ -1,8 +1,8 @@
 {
   "name": "MITNetwork",
-  "version": "0.1.0",
-  "summary": "A short description of MITNetwork.",
-  "description": "TODO: Add long description of the pod here.",
+  "version": "0.0.4",
+  "summary": "summary of MITNetwork.",
+  "description": "MITNetwork description",
   "homepage": "https://github.com/mcmengchen/MITNetwork",
   "license": {
     "type": "MIT",
@@ -13,10 +13,10 @@
   },
   "source": {
     "git": "https://github.com/mcmengchen/MITNetwork.git",
-    "tag": "0.1.0"
+    "tag": "0.0.4"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "7.0"
   },
   "source_files": "MITNetwork/Classes/**/*",
   "dependencies": {

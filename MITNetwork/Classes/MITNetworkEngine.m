@@ -25,6 +25,9 @@
 if(BlockName){\
 BlockName(__VA_ARGS__);\
 }
+#define MIT_Identifier(A) [MITNetworkEngine Identifier:A]
+
+
 typedef void (^MITConstructingFormDataBlock)(id<AFMultipartFormData> formData);
 typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 
@@ -53,6 +56,10 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 +(void)load{
     [[AFNetworkReachabilityManager sharedManager]startMonitoring];
 }
+#pragma mark action 转换identifier
++ (NSString *)Identifier:(NSUInteger)num{
+    return [NSString stringWithFormat:@"%ld",num];
+}
 
 #pragma mark action 创建单例
 + (MITNetworkEngine *)defaultEngine{
@@ -68,7 +75,7 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 - (AFJSONResponseSerializer *)jsonResponseSerializer {
     if (!_jsonResponseSerializer) {
         _jsonResponseSerializer = [AFJSONResponseSerializer serializer];
-        _jsonResponseSerializer.removesKeysWithNullValues = YES;
+        _jsonResponseSerializer.removesKeysWithNullValues = true;
         
     }
     return _jsonResponseSerializer;
@@ -173,7 +180,7 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
     NSMutableURLRequest *request =  [self mit_constructRequestConfigByRequest:requestTask bodyWithBlock:nil];
     //如果是只读缓存的类型
     if (requestTask.cachePolicy == MITNET_REQUEST_CACHE_ONLY) {
-        MITLog(@"缓存只读");
+        MITLog(@"只读缓存");
         id obj = [MITNetworkCache mit_CacheWithURL:requestTask.url params:requestTask.parameters];
         if (obj &&![obj isKindOfClass:[NSNull class]]) {
             if (requestTask.successBlock) {
@@ -213,7 +220,7 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
                     [formData appendPartWithFileURL:obj.fileURL name:obj.name error:&fileError];
                 }
                 if (fileError) {
-                    *stop = YES;
+                    *stop = true;
                 }
             }
         }];
@@ -245,26 +252,26 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
     NSData * data = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:downloadTempCachePath]];
     BOOL resumeDataIsValid = [self validateResumeData:data];
     BOOL canBeResumed = resumeDataFileExists && resumeDataIsValid;
-    BOOL resumeSucceeded = NO;
+    BOOL resumeSucceeded = false;
     __block NSURLSessionDownloadTask *downloadTask = nil;
     if (canBeResumed) {
         @try {
             downloadTask = [self.manager downloadTaskWithResumeData:data progress:downloadRequest.progressBlock destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-                downloadRequest.resumDownloadPath = targetPath;
+                downloadRequest.resumDownloadPath = targetPath.absoluteString;
                 NSURL * url = [NSURL fileURLWithPath:downloadRequest.downloadSavePath isDirectory:NO];
                 MITLog(@"url = %@",url);
                 return url;
             } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
                 [self handleResponseResult:downloadTask responseObject:filePath error:error];
             }];
-            resumeSucceeded = YES;
+            resumeSucceeded = true;
         } @catch (NSException *exception) {
-            resumeSucceeded = NO;
+            resumeSucceeded = false;
         }
     }
     if (!resumeSucceeded) {
         downloadTask = [self.manager downloadTaskWithRequest:urlRequest progress:downloadRequest.progressBlock destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-            downloadRequest.resumDownloadPath = targetPath;
+            downloadRequest.resumDownloadPath = targetPath.absoluteString;
             NSURL * url = [NSURL fileURLWithPath:downloadRequest.downloadSavePath isDirectory:NO];
             MITLog(@"url = %@",url);
             return url;
@@ -281,15 +288,14 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 #pragma mark action 处理回包
 - (void)handleResponseResult:(NSURLSessionTask *)task responseObject:(id)responseObject error:(NSError *)error {
     Lock();
-    MITNetworkRequest *request = _requestDict[@(task.taskIdentifier)];
+    MITNetworkRequest *request = _requestDict[MIT_Identifier(task.taskIdentifier)];
     Unlock();
     [self mit_responseSerializerByRequest:request];
     NSError * __autoreleasing serializationError = nil;
-    NSError * __autoreleasing validationError = nil;
     NSError *requestError = nil;
     request.responseObject = responseObject;
     request.responseStatusCode = [(NSHTTPURLResponse *)task.response statusCode];
-    BOOL succeed = NO;
+    BOOL succeed = false;
     if ([request.responseObject isKindOfClass:[NSData class]]) {
         request.responseData = responseObject;
         switch (request.responseSerializerType) {
@@ -302,16 +308,18 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
             case MITNET_RESPONSE_SERIALIZERTYPE_XML:
                 request.responseObject = [self.manager.responseSerializer responseObjectForResponse:task.response data:request.responseData error:&serializationError];
                 break;
+            case MITNET_RESPONSE_SERIALIZERTYPE_PROPERTYLIST:
+                break;
         }
     }
     if (error) {
-        succeed = NO;
+        succeed = false;
         requestError = error;
     } else if (serializationError) {
-        succeed = NO;
+        succeed = false;
         requestError = serializationError;
     } else {
-        succeed = YES;
+        succeed = true;
     }
     //完成回调
     MIT_SAFE_BLOCK(request.finishBlock,request.responseObject,requestError);
@@ -344,10 +352,10 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
     if (request.resumDownloadPath&&(request.type == MITNET_TYPE_DOWNLOAD)&&request.allowResume) {
         NSData *incompleteDownloadData = error.userInfo[NSURLSessionDownloadTaskResumeData];
         if (incompleteDownloadData) {
-            [incompleteDownloadData writeToURL:[self incompleteDownloadTempPathForDownloadPath:request.resumDownloadPath] atomically:YES];
+            [incompleteDownloadData writeToURL:[NSURL URLWithString:[self incompleteDownloadTempPathForDownloadPath:request.resumDownloadPath]] atomically:YES];
         }
         NSData * data= [NSData dataWithContentsOfURL:[NSURL URLWithString:request.resumDownloadPath]];
-        MITLog(@"data = %@",data);
+        MITLog(@"requestDidFailWithRequest->data = %@",data);
     }
     if ([request.responseObject isKindOfClass:[NSURL class]]) {
         NSURL *url = request.responseObject;
@@ -399,7 +407,7 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 - (void)mit_addRequestTask:(__kindof MITNetworkRequest*)request {
     if (request == nil)    return;
     Lock();
-    _requestDict[@(request.requestTask.taskIdentifier)] = request;
+    _requestDict[MIT_Identifier(request.requestTask.taskIdentifier)] = request;
     Unlock();
 }
 
@@ -445,7 +453,7 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
             requestTask.headers = parameters;
         }
     }
-    AFHTTPRequestSerializer *requestSerializer = self.manager;
+    AFHTTPRequestSerializer *requestSerializer = self.manager.requestSerializer;
     switch (requestTask.requestSerializerType) {
         case MITNET_REQUEST_SERIALIZERTYPE_HTTP:
             requestSerializer= [AFHTTPRequestSerializer serializer];
@@ -530,7 +538,7 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
     }
     BOOL isDirectory;
     if(![[NSFileManager defaultManager] fileExistsAtPath:fileSavePathTemp isDirectory:&isDirectory]) {
-        isDirectory = NO;
+        isDirectory = false;
     }
     if (isDirectory) {
         NSString *fileName = [downloadRequest.url lastPathComponent];
@@ -547,23 +555,23 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 #pragma mark action 校验之前下载数据
 - (BOOL)validateResumeData:(NSData *)data {
     // From http://stackoverflow.com/a/22137510/3562486
-    if (!data || [data length] < 1) return NO;
+    if (!data || [data length] < 1) return false;
     
     NSError *error;
     NSDictionary *resumeDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
-    if (!resumeDictionary || error) return NO;
+    if (!resumeDictionary || error) return false;
     
     // Before iOS 9 & Mac OS X 10.11
 #if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED < 90000)\
 || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED < 101100)
     NSString *localFilePath = [resumeDictionary objectForKey:@"NSURLSessionResumeInfoLocalPath"];
-    if ([localFilePath length] < 1) return NO;
+    if ([localFilePath length] < 1) return false;
     return [[NSFileManager defaultManager] fileExistsAtPath:localFilePath];
 #endif
     // After iOS 9 we can not actually detects if the cache file exists. This plist file has a somehow
     // complicated structue. Besides, the plist structure is different between iOS 9 and iOS 10.
     // We can only assume that the plist being successfully parsed means the resume data is valid.
-    return YES;
+    return true;
 }
 
 
@@ -607,15 +615,15 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 
 
 #pragma mark action 取消网络请求
-+ (void)cancelRequest:(MITNetworkRequest *)request Block:(void (^)(BOOL,MITNET_REQUEST_STEP))cancelBlock{
++ (void)cancelRequest:(MITNetworkRequest *)request Block:(nullable void (^)(BOOL,MITNET_REQUEST_STEP))cancelBlock{
     [[MITNetworkEngine defaultEngine] cancelRequest:request Block:cancelBlock];
 }
 
-- (void)cancelRequest:(MITNetworkRequest *)request Block:(void(^)(BOOL,MITNET_REQUEST_STEP))cancelBlock{
+- (void)cancelRequest:(MITNetworkRequest *)request Block:(nullable void(^)(BOOL,MITNET_REQUEST_STEP))cancelBlock{
     if (!request) {
         return;
     }
-    MITNetworkRequest * resultRequest = [_requestDict objectForKey:@(request.requestTask.taskIdentifier)];
+    MITNetworkRequest * resultRequest = [_requestDict objectForKey:MIT_Identifier(request.requestTask.taskIdentifier)];
     if (resultRequest&&resultRequest.requestTask) {
         [resultRequest.requestTask cancel];
         MITLog(@"statet = %ld",resultRequest.requestTask.state);
@@ -673,8 +681,11 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
 #pragma mark action 移除请求
 - (void)removeRequest:(MITNetworkRequest *)request{
     Lock();
-    [_requestDict removeObjectForKey:@(request.requestTask.taskIdentifier)];
+    [_requestDict removeObjectForKey:MIT_Identifier(request.requestTask.taskIdentifier)];
     Unlock();
+    //注意不加这个内存释放不了
+    [self.manager invalidateSessionCancelingTasks:false];
+
 }
 #pragma mark action 取消所有请求
 +(void)cancelAllRequest{
@@ -725,6 +736,14 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite{
  didResumeAtOffset:(int64_t)fileOffset
 expectedTotalBytes:(int64_t)expectedTotalBytes{
     
+    
+}
+-(void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics{
+    
+    
+}
+
+-(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location{
     
 }
 

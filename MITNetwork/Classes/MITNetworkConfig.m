@@ -42,7 +42,9 @@
         }
         _defaultDownloadFolder = tempDownloadFolder;
         _cachePolicy = MITNET_REQUEST_CACHE_REFRESH;
+        _cookieEnable = false;
         self.enableDebug = false;
+        
     }
     return self;
 }

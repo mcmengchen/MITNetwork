@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
                 onFailure:(nullable MITSuccessBlock)failureBlock;
 
 //取消请求
-+ (void)cancelRequest:(MITNetworkRequest * )request Block:(void(^)(BOOL,MITNET_REQUEST_STEP))cancelBlock;
++ (void)cancelRequest:(MITNetworkRequest * )request Block:(nullable void(^)(BOOL,MITNET_REQUEST_STEP))cancelBlock;
 
 //暂停
 + (void)suspend:(MITNetworkRequest *)request;

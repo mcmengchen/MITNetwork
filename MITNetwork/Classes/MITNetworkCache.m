@@ -35,7 +35,6 @@ static NSString * kMitCacheKey = @"kMitCacheKey";
     return manager;
 }
 
-
 //默认时间限制（默认15天）
 static NSTimeInterval kDefaultAgeLimit = 60*60*24*15;
 //默认消耗限制(默认50M)
@@ -47,7 +46,7 @@ static NSUInteger kDefaultCostLimit = 50*1024*1024;
         if ([MITNetworkConfig defaultConfig].cacheAgeLimit>0) {
             _cache.memoryCache.costLimit = [MITNetworkConfig defaultConfig].cacheAgeLimit;
         }else{
-            _cache.memoryCache.costLimit = kDefaultAgeLimit;
+            _cache.memoryCache.costLimit = kDefaultCostLimit;
         }
         if ([MITNetworkConfig defaultConfig].cacheAgeLimit>0) {
             _cache.memoryCache.ageLimit = [MITNetworkConfig defaultConfig].cacheAgeLimit;
@@ -93,12 +92,28 @@ static NSUInteger kDefaultCostLimit = 50*1024*1024;
     return cacheKey;
 }
 
+#pragma mark action 移除所有缓存
 + (void)removeAllCache{
     [[MITNetworkCache cache] removeAllCache];
 }
 
 - (void)removeAllCache{
     [_cache removeAllObjects];
+}
+
+#pragma mark action 获取所有缓存大小
++ (NSUInteger)getAllHttpCacheSize{
+    return [[MITNetworkCache cache].cache.memoryCache totalCost]+[[MITNetworkCache cache].cache.diskCache totalCost];
+}
+
+#pragma mark action 获取磁盘缓存大小
++ (NSUInteger)getDiskCacheSize{
+    return [[MITNetworkCache cache].cache.diskCache totalCost];
+}
+
+#pragma mark action 获取内存缓存大小
++ (NSUInteger)getMemoryCacheSize{
+    return [[MITNetworkCache cache].cache.memoryCache totalCost];
 }
 
 
