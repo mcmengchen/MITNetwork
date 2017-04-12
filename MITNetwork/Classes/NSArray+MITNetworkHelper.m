@@ -21,12 +21,6 @@
     }
     return value;
 }
-- (void)addObjectCheck:(id)anObject
-{
-    if (anObject == nil) {
-        NSLog(@"NSArray addObject: anObject 为 nil");
-        return;
-    }
-    [self addObject:anObject];
-}
+
+
 @end

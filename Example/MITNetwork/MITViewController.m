@@ -95,7 +95,7 @@
         request.api = @"/statuses/public_timeline.json";
         request.method = MITNET_REQUEST_METHOD_GET;
         request.parameters = @{@"access_token":[NSString stringWithFormat:@"%@",_weiboToken]};
-        request.cachePolicy = MITNET_REQUEST_CACHE_ONLY;
+//        request.cachePolicy = MITNET_REQUEST_CACHE_ONLY;
     } onSuccess:^(id  _Nullable responseObject) {
 //        NSLog(@"%@",responseObject);
     } onFailure:^(NSError * _Nullable error) {

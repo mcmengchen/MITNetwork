@@ -14,7 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - MITNetwork (0.1.0):
+  - MITNetwork (0.0.4):
     - AFNetworking
     - YYCache
   - WeiboSDK (3.1.3)
@@ -30,10 +30,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  MITNetwork: ca77bd03d2968a988406d064f8ba84170fd4a22d
+  MITNetwork: cb6ce2d76b4d3ada71ae84cff0144ad5993aa6df
   WeiboSDK: acb067053668102cf07d01aa7604350162c2e466
   YYCache: 8105b6638f5e849296c71f331ff83891a4942952
 
-PODFILE CHECKSUM: aeb1823621c2232214a5221185476cfd5d3214ea
+PODFILE CHECKSUM: 66234c4b259a54085276f2b06d40ec3c9f820f28
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.0

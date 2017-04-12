@@ -29,7 +29,6 @@
 
 + (void)saveCookies:(NSArray*)cookies;
 + (void)deleteAllCookies;
-+ (NSArray*)getCookies;
-
++ (NSArray*)getAllCookies;
 
 @end

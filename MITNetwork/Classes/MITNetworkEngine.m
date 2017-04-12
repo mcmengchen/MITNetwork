@@ -12,7 +12,7 @@
 #import "MITNetworkCache.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "MITNetworkLogger.h"
-
+#import "MITNetworkCookie.h"
 #if __has_include(<AFNetworking/AFNetworking.h>)
 #import <AFNetworking/AFNetworking.h>
 #else
@@ -99,6 +99,9 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
     if (self = [super init]) {
         _requestDict = [NSMutableDictionary dictionaryWithCapacity:0];
         _manager = [AFHTTPSessionManager manager];
+        if ([MITNetworkConfig defaultConfig].cookieEnable) {
+            [self setCookies:_manager];
+        }
         _manager.operationQueue.maxConcurrentOperationCount = [MITNetworkConfig defaultConfig].maxOperationCount;
         pthread_mutex_init(&_lock,NULL);
         //获取当前的网络
@@ -195,6 +198,9 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
     dataTask = [self.manager dataTaskWithRequest:request
                                       completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
                                           __strong __typeof(weakSelf)strongSelf = weakSelf;
+                                          //处理cookie
+                                          [strongSelf handleCookie:dataTask error:error];
+                                          //处理回报
                                           [strongSelf handleResponseResult:dataTask responseObject:responseObject error:error];
                                       }];
     requestTask.requestTask = dataTask;
@@ -283,6 +289,37 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
     downloadRequest.requestTask = downloadTask;
     [downloadTask resume];
     [self mit_addRequestTask:downloadRequest];
+}
+
+
+#pragma mark action 处理 cookie
+- (void)handleCookie:(NSURLSessionTask *)task error:(NSError *)error {
+    if ([MITNetworkConfig defaultConfig].cookieEnable) {
+        NSHTTPURLResponse *resp = (NSHTTPURLResponse *)task.response;
+        if (!error||resp.statusCode == 200) {
+            NSDictionary *fields = ((NSHTTPURLResponse *)task.response).allHeaderFields;
+            NSArray *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:fields forURL:[NSURL URLWithString:[[MITNetworkConfig defaultConfig] hostUrl]]];
+            [MITNetworkCookie saveCookies:cookies];
+        }
+    }
+}
+
+#pragma mark action 给 manager 设置 cookies
+- (void)setCookies:(AFHTTPSessionManager *)manager
+{
+    NSArray *cookies = [MITNetworkCookie getAllCookies];
+    if (cookies&&cookies.count > 0) {
+        NSMutableDictionary *cookieDic = [NSMutableDictionary dictionary];
+        NSMutableString *cookieValue = [NSMutableString new];
+        for (NSHTTPCookie *cookie in cookies) {
+            [cookieDic setObject:cookie.value forKey:cookie.name];
+        }
+        for (NSString *key in cookieDic) {
+            NSString *appendString = [NSString stringWithFormat:@"%@=%@;", key, [cookieDic valueForKey:key]];
+            [cookieValue appendString:appendString];
+        }
+        [manager.requestSerializer setValue:cookieValue forHTTPHeaderField:@"Cookie"];
+    }
 }
 
 #pragma mark action 处理回包
@@ -683,8 +720,9 @@ typedef void (^MITNetStatusChangeCallBack)(MITNET_REACHABILITY_TATUS status);
     Lock();
     [_requestDict removeObjectForKey:MIT_Identifier(request.requestTask.taskIdentifier)];
     Unlock();
+#warning 查看
     //注意不加这个内存释放不了
-    [self.manager invalidateSessionCancelingTasks:false];
+//    [self.manager invalidateSessionCancelingTasks:false];
 
 }
 #pragma mark action 取消所有请求

@@ -8,7 +8,7 @@
 
 #import "MITNetworkConfig.h"
 #import "MITNetworkLogger.h"
-
+#import "MITNetworkCookie.h"
 #define MIT_TIMEOUT 20
 #define MIT_OPRETION_COUT 5
 

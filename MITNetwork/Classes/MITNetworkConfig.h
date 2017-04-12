@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @class MITNetworkRequest;
+@class MITNetworkCookieModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -169,12 +170,9 @@ typedef void (^MITFinishedBlock)(id _Nullable responseObject, NSError * _Nullabl
 /** 是否保存 cookie */
 @property (nonatomic, assign) BOOL cookieEnable;
 
-/* cookie name  */
-@property (nonatomic, strong) NSString * cookieName;
-/* cookie domain */
-@property (nonatomic, strong) NSString * cookieDomain;
-/* cookie path */
-@property (nonatomic, strong) NSString * cookiePath;
+
+/* cookie 模型 */
+@property (nonatomic, strong) MITNetworkCookieModel * cookieModel;
 
 
 

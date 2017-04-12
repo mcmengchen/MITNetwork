@@ -10,5 +10,4 @@
 
 @interface NSArray (MITNetworkHelper)
 - (id)objectAtIndexCheck:(NSUInteger)index;
-- (void)addObjectCheck:(id)anObject;
 @end

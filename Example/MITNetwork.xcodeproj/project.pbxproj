@@ -22,7 +22,7 @@
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
-		8CD9E3592B7FA1FA42A9BB15 /* Pods_MITNetwork_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC5EB99647A14316AD8A9080 /* Pods_MITNetwork_Example.framework */; };
+		B7B9E4B8E3E313A62955F3BC /* libPods-MITNetwork_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0843C9B81CFEF4FE8F94CB6E /* libPods-MITNetwork_Example.a */; };
 		FCD6EE641E70E95B007D313D /* 180.png in Resources */ = {isa = PBXBuildFile; fileRef = FCD6EE631E70E95B007D313D /* 180.png */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0843C9B81CFEF4FE8F94CB6E /* libPods-MITNetwork_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MITNetwork_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FC1D93759C2D0822FC25691 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* MITNetwork_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MITNetwork_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -63,7 +64,6 @@
 		A560BB531BE9C90DC23DB0B0 /* Pods-MITNetwork_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MITNetwork_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MITNetwork_Example/Pods-MITNetwork_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		A8E9D777FC9B9D4363F6D2F1 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		AA8C9B41CF0E932D8F57AB53 /* Pods_MITNetwork_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MITNetwork_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC5EB99647A14316AD8A9080 /* Pods_MITNetwork_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MITNetwork_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF2D1025E785B9D63D782E82 /* MITNetwork.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = MITNetwork.podspec; path = ../MITNetwork.podspec; sourceTree = "<group>"; };
 		FCD6EE631E70E95B007D313D /* 180.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 180.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,7 +76,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				8CD9E3592B7FA1FA42A9BB15 /* Pods_MITNetwork_Example.framework in Frameworks */,
+				B7B9E4B8E3E313A62955F3BC /* libPods-MITNetwork_Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,8 +121,8 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				BC5EB99647A14316AD8A9080 /* Pods_MITNetwork_Example.framework */,
 				AA8C9B41CF0E932D8F57AB53 /* Pods_MITNetwork_Tests.framework */,
+				0843C9B81CFEF4FE8F94CB6E /* libPods-MITNetwork_Example.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
